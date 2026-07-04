@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  caw_app:
+    build: .
+    ports:
+      - "4321:4321"
+    environment:
+      - DATABASE_URL=postgresql://caw:caw_local@postgres:5432/caw_db
+      - HOST=0.0.0.0
+      - PORT=4321
+      - SITE_URL=http://localhost:4321
+      - SITE_NAME=CAW Site
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: caw_db
+      POSTGRES_USER: caw
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-caw_local}
+    ports:
+      - "5433:5432"
+    volumes:
+      - caw_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U caw -d caw_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  caw_pgdata:

@@ -1,0 +1,25 @@
+<% const recentHtml = (() => {
+  const arts = typeof recentArticles !== 'undefined' ? recentArticles : [];
+  if (arts.length === 0) return '';
+  const cards = arts.map(a => {
+    const date = a.published_at ? new Date(a.published_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) : '';
+    return `<a href="/blog/${a.slug}" style="display:block;padding:1.25rem;border:1px solid rgba(255,255,255,.08);border-radius:.5rem;transition:border-color .2s,background .2s" onmouseover="this.style.borderColor='rgba(0,255,148,.3)';this.style.background='rgba(0,255,148,.02)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='transparent'">
+      <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.35rem">
+        <span style="font-size:.7rem;color:rgba(255,255,255,.4);font-family:ui-monospace,monospace">${date}</span>
+        <span style="font-size:.65rem;text-transform:uppercase;color:#00B8FF;font-family:ui-monospace,monospace">${a.category || ''}</span>
+      </div>
+      <h4 style="font-size:1rem;font-weight:700;color:#fff;margin:0">${a.title}</h4>
+      ${a.excerpt ? `<p style="font-size:.8rem;color:rgba(255,255,255,.45);margin:.3rem 0 0">${a.excerpt}</p>` : ''}
+    </a>`;
+  }).join('');
+  return `<section style="background:#050505;padding:4rem 0;border-top:1px solid rgba(255,255,255,.06)">
+    <div style="max-width:1400px;margin:0 auto;padding:0 1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+        <h2 style="font-family:ui-monospace,monospace;font-size:1rem;color:#00FF94;text-transform:uppercase">// Latest from the Blog</h2>
+        <a href="/blog" style="font-size:.8rem;color:rgba(255,255,255,.5);font-family:ui-monospace,monospace;text-decoration:none">View all &rarr;</a>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem">${cards}</div>
+    </div>
+  </section>`;
+})(); %>
+<%- include('layout', { body: blocksHtml + recentHtml, title, description, siteName, nav, footer, palette, currentPath }) %>

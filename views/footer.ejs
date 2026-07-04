@@ -1,0 +1,67 @@
+<% const tagline=footer?.tagline || 'The Unicorn Developer.' ; const copyrightName=footer?.copyright || siteName
+  || 'CAW' ; const year=new Date().getFullYear(); const MAIN='https://jumpstartscaling.com' ; %>
+  <footer>
+    <div class="container">
+      <div class="grid gap-8 mb-12" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+        <div>
+          <a href="/" style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;text-decoration:none"
+            aria-label="CAW — Home">
+            <div
+              style="width:40px;height:40px;background:#00FF94;border-radius:.25rem;display:flex;align-items:center;justify-content:center;color:#000;flex-shrink:0"
+              aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                aria-hidden="true" focusable="false">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <span style="font-weight:700;font-size:1.1rem;color:#fff">Chris <span
+                style="color:#00FF94">Amaya</span></span>
+          </a>
+          <p style="font-size:.875rem;color:rgba(255,255,255,0.70)">
+            <%= tagline %>
+          </p>
+        </div>
+        <div>
+          <p
+            style="font-size:.75rem;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(232,198,119,0.9);margin-bottom:1rem">
+            Resources</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:.75rem">
+            <li><a href="<%= MAIN %>/audit"
+                style="font-size:.9rem;color:rgba(255,255,255,0.75);text-decoration:none;display:inline-block;padding:.25rem 0;min-height:44px;display:flex;align-items:center"
+                onmouseenter="this.style.color='#fff'" onmouseleave="this.style.color='rgba(255,255,255,0.75)'">Moat
+                Audit</a></li>
+            <li><a href="<%= MAIN %>/resources/calculators"
+                style="font-size:.9rem;color:rgba(255,255,255,0.75);text-decoration:none;display:flex;align-items:center;min-height:44px;padding:.25rem 0"
+                onmouseenter="this.style.color='#fff'"
+                onmouseleave="this.style.color='rgba(255,255,255,0.75)'">Calculators</a></li>
+          </ul>
+        </div>
+        <div>
+          <p
+            style="font-size:.75rem;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(232,198,119,0.9);margin-bottom:1rem">
+            Direct</p>
+          <a href="/contact"
+            style="font-size:.9rem;color:rgba(255,255,255,0.75);text-decoration:none;display:flex;align-items:center;min-height:44px"
+            onmouseenter="this.style.color='#fff'" onmouseleave="this.style.color='rgba(255,255,255,0.75)'">Book a
+            Strategy Call</a>
+          <a href="mailto:hello@jumpstartscaling.com"
+            style="font-size:.85rem;color:rgba(255,255,255,0.65);text-decoration:none;display:flex;align-items:center;min-height:44px"
+            onmouseenter="this.style.color='#fff'"
+            onmouseleave="this.style.color='rgba(255,255,255,0.65)'">hello@jumpstartscaling.com</a>
+        </div>
+      </div>
+      <div
+        style="padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem">
+        <p style="font-size:.8rem;color:rgba(255,255,255,0.55)">&copy; <%= year %>
+            <%= copyrightName %>. All rights reserved.</p>
+        <div style="display:flex;gap:1.5rem">
+          <a href="/terms"
+            style="font-size:.8rem;color:rgba(255,255,255,0.55);text-decoration:none;min-height:44px;display:flex;align-items:center;padding:.25rem 0"
+            onmouseenter="this.style.color='#fff'" onmouseleave="this.style.color='rgba(255,255,255,0.55)'">Terms</a>
+          <a href="/privacy"
+            style="font-size:.8rem;color:rgba(255,255,255,0.55);text-decoration:none;min-height:44px;display:flex;align-items:center;padding:.25rem 0"
+            onmouseenter="this.style.color='#fff'" onmouseleave="this.style.color='rgba(255,255,255,0.55)'">Privacy</a>
+        </div>
+      </div>
+    </div>
+  </footer>

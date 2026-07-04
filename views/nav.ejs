@@ -1,0 +1,167 @@
+<% const portfolio=nav?.portfolio || [ { name: 'The Problem' , href: '/#hook' }, { name: 'Architecture' ,
+  href: '/#solution' }, { name: 'Blog & Knowledge Base' , href: '/blog' }, { name: 'How I Build' ,
+  href: '/guide/how-i-build' }, { name: 'Search' , href: '/search' }, ]; const customApps=nav?.custom_apps || []; const
+  growthTools=nav?.growth_tools || []; const locationsNav=nav?.locations || []; const solutionsNav=nav?.solutions || [];
+  const ctaLabel=nav?.cta?.label || 'INITIATE_HANDSHAKE' ; const
+  ctaHref=nav?.cta?.href || '#audit' ; const sitePart=(siteName || 'CAW' ).split(' ');
+  const first = sitePart[0] || '';
+  const rest = sitePart.slice(1).join(' ') || '';
+%>
+<style>
+  /* Nav responsive overrides — scoped here to avoid layout.ejs media query order issues */
+  #desktop-nav { display: none }
+  @media (min-width: 1024px) {
+    #desktop-nav { display: flex; align-items: center; gap: 1.5rem; list-style: none }
+    #mobile-menu-btn { display: none !important }
+  }
+  /* Dropdown hover */
+  .nav-dropdown { position: relative }
+  .nav-dropdown > button {
+    background: none; border: none; cursor: pointer;
+    color: rgba(255,255,255,.9); font-size: .82rem; font-weight: 500;
+    display: flex; align-items: center; gap: .3rem;
+    min-height: 44px; padding: 0;
+  }
+  .nav-dropdown > button::after { content: ' ▾'; font-size: .65rem; opacity: .7 } .nav-dropdown-menu { display: none;
+  position: absolute; top: calc(100% + .5rem); left: 50%; transform: translateX(-50%); min-width: 210px; background:
+  #1a1a1a; border: 1px solid rgba(255,255,255,.12); border-radius: .5rem; padding: .4rem 0; z-index: 300; box-shadow: 0
+  16px 48px rgba(0,0,0,.6); } .nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown:focus-within .nav-dropdown-menu {
+  display: block } .nav-dropdown-menu a { display: block; padding: .5rem 1rem; font-size: .82rem; color:
+  rgba(255,255,255,.8); min-height: 36px; } .nav-dropdown-menu a:hover { color: #fff; background: rgba(255,255,255,.06)
+  } </style>
+
+  <nav id="navbar" aria-label="Main navigation">
+    <div class="container flex items-center" style="justify-content:space-between">
+
+      <!-- Logo -->
+      <a href="/" aria-label="CAW — Home"
+        style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+        <div
+          style="width:40px;height:40px;background:linear-gradient(135deg,#00FF94,#00BC6D);border-radius:.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0"
+          aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#050505" stroke-width="3"
+            aria-hidden="true" focusable="false">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        <span style="font-weight:700;font-size:1.1rem;color:#fff">
+          <%= first %><span style="color:#00FF94">
+              <%= rest %>
+            </span>
+        </span>
+      </a>
+
+      <!-- Desktop nav -->
+      <ul id="desktop-nav" role="list" aria-label="Site navigation">
+
+        <li><a href="/blog" style="color:rgba(255,255,255,.9);min-height:44px;display:flex;align-items:center;font-size:.82rem">Blog</a></li>
+
+        <% if (customApps.length) { %>
+          <li class="nav-dropdown">
+            <button type="button" aria-haspopup="true" aria-expanded="false">Services</button>
+            <ul class="nav-dropdown-menu" role="menu" aria-label="Services">
+              <% customApps.forEach(function(item){ %>
+                <li role="none"><a href="<%= item.href %>" role="menuitem"><%= item.name %></a></li>
+              <% }); %>
+            </ul>
+          </li>
+        <% } %>
+
+        <% if (solutionsNav.length) { %>
+          <li class="nav-dropdown">
+            <button type="button" aria-haspopup="true" aria-expanded="false">Solutions</button>
+            <ul class="nav-dropdown-menu" role="menu" aria-label="Solutions">
+              <% solutionsNav.forEach(function(item){ %>
+                <li role="none"><a href="<%= item.href %>" role="menuitem"><%= item.name %></a></li>
+              <% }); %>
+            </ul>
+          </li>
+        <% } %>
+
+        <% if (locationsNav.length) { %>
+          <li class="nav-dropdown">
+            <button type="button" aria-haspopup="true" aria-expanded="false">Locations</button>
+            <ul class="nav-dropdown-menu" role="menu" aria-label="Locations">
+              <% locationsNav.forEach(function(item){ %>
+                <li role="none"><a href="<%= item.href %>" role="menuitem"><%= item.name %></a></li>
+              <% }); %>
+            </ul>
+          </li>
+        <% } %>
+
+        <li><a href="/guide/how-i-build" style="color:rgba(255,255,255,.9);min-height:44px;display:flex;align-items:center;font-size:.82rem">How I Build</a></li>
+        <li><a href="/search" style="color:rgba(255,255,255,.9);min-height:44px;display:flex;align-items:center;font-size:.82rem">Search</a></li>
+
+        <li>
+          <a href="<%= ctaHref %>"
+            style="display:inline-flex;align-items:center;padding:.6rem 1.4rem;background:#00FF94;color:#050505;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;border-radius:.5rem;min-height:44px;white-space:nowrap">
+            <%= ctaLabel %>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Hamburger (shown <1024px) -->
+      <button id="mobile-menu-btn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer"
+        style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:44px;height:44px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:.375rem;cursor:pointer;padding:0">
+        <span style="width:20px;height:2px;background:#fff;display:block" aria-hidden="true"></span>
+        <span style="width:20px;height:2px;background:#fff;display:block" aria-hidden="true"></span>
+        <span style="width:20px;height:2px;background:#fff;display:block" aria-hidden="true"></span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- Mobile drawer -->
+  <div id="mobile-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu" inert>
+    <button id="mobile-drawer-close" aria-label="Close navigation menu">✕</button>
+
+    <nav aria-label="Mobile navigation">
+
+      <div class="drawer-section">
+        <span class="drawer-label">Navigate</span>
+        <a href="/">Home</a>
+        <a href="/blog">Blog & Knowledge Base</a>
+        <a href="/guide/how-i-build">How I Build</a>
+        <a href="/search">Search</a>
+      </div>
+
+      <% if (customApps.length) { %>
+        <div class="drawer-section">
+          <span class="drawer-label">Services</span>
+          <% customApps.forEach(function(item){ %>
+            <a href="<%= item.href %>"><%= item.name %></a>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <% if (solutionsNav.length) { %>
+        <div class="drawer-section">
+          <span class="drawer-label">Solutions</span>
+          <% solutionsNav.forEach(function(item){ %>
+            <a href="<%= item.href %>"><%= item.name %></a>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <% if (locationsNav.length) { %>
+        <div class="drawer-section">
+          <span class="drawer-label">Locations</span>
+          <% locationsNav.forEach(function(item){ %>
+            <a href="<%= item.href %>"><%= item.name %></a>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <% if (growthTools.length) { %>
+        <div class="drawer-section">
+          <span class="drawer-label">Growth Tools</span>
+          <% growthTools.forEach(function(item){ %>
+            <a href="<%= item.href %>"><%= item.name %></a>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <a href="<%= ctaHref %>" class="drawer-cta"><%= ctaLabel %></a>
+
+    </nav>
+  </div>

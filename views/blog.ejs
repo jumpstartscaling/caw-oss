@@ -1,0 +1,47 @@
+<% const articleListHtml = (() => {
+  const cats = typeof categoryCounts !== 'undefined' ? categoryCounts : {};
+  const activeCat = typeof activeCategory !== 'undefined' ? activeCategory : null;
+
+  // Category filter bar
+  const allCount = Object.values(cats).reduce((s, n) => s + n, 0);
+  let filterHtml = `<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem">`;
+  filterHtml += `<a href="/blog" style="padding:.4rem .9rem;font-size:.75rem;font-family:ui-monospace,monospace;border-radius:.25rem;text-decoration:none;transition:all .2s;${!activeCat ? 'background:#00FF94;color:#050505;font-weight:700' : 'background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1)'}">ALL (${allCount})</a>`;
+  for (const [cat, count] of Object.entries(cats)) {
+    const isActive = activeCat === cat;
+    filterHtml += `<a href="/blog?category=${cat}" style="padding:.4rem .9rem;font-size:.75rem;font-family:ui-monospace,monospace;border-radius:.25rem;text-decoration:none;text-transform:uppercase;transition:all .2s;${isActive ? 'background:#00FF94;color:#050505;font-weight:700' : 'background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1)'}">${cat} (${count})</a>`;
+  }
+  filterHtml += `</div>`;
+
+  if (!articles || articles.length === 0) {
+    return activeCat
+      ? `<section style="background:#050505;padding:3rem 0 4rem"><div style="max-width:1400px;margin:0 auto;padding:0 1.5rem">${filterHtml}<p style="color:rgba(255,255,255,.5);text-align:center;font-family:ui-monospace,monospace">No articles in this category yet.</p></div></section>`
+      : '';
+  }
+
+  const cards = articles.map(a => {
+    const date = a.published_at ? new Date(a.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+    const tagHtml = (a.tags || []).slice(0, 3).map(t => `<span style="font-size:.65rem;padding:.12rem .45rem;border:1px solid rgba(0,255,148,.25);border-radius:.2rem;color:#00FF94;font-family:ui-monospace,monospace">${t}</span>`).join(' ');
+    const wordCount = a.excerpt ? a.excerpt.split(/\s+/).length * 15 : 500;
+    const readMin = Math.max(1, Math.round(wordCount / 230));
+    return `<a href="/blog/${a.slug}" style="display:block;padding:1.5rem;border:1px solid rgba(255,255,255,.1);border-radius:.5rem;background:rgba(255,255,255,.02);transition:border-color .2s,background .2s" onmouseover="this.style.borderColor='rgba(0,255,148,.4)';this.style.background='rgba(0,255,148,.03)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.background='rgba(255,255,255,.02)'">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem">
+        <span style="font-size:.75rem;color:rgba(255,255,255,.5);font-family:ui-monospace,monospace">${date}</span>
+        <span style="font-size:.7rem;text-transform:uppercase;color:#00B8FF;font-family:ui-monospace,monospace">${a.category || ''}</span>
+        <span style="font-size:.65rem;color:rgba(255,255,255,.3);font-family:ui-monospace,monospace">${readMin} min</span>
+      </div>
+      <h3 style="font-size:1.15rem;font-weight:700;color:#fff;margin-bottom:.4rem">${a.title}</h3>
+      ${a.excerpt ? `<p style="font-size:.875rem;color:rgba(255,255,255,.6);margin-bottom:.75rem">${a.excerpt}</p>` : ''}
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">${tagHtml}</div>
+    </a>`;
+  }).join('');
+
+  return `<section style="background:#050505;padding:3rem 0 4rem"><div style="max-width:1400px;margin:0 auto;padding:0 1.5rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <h2 style="font-size:1.5rem;font-weight:700;color:#fff;font-family:ui-monospace,monospace">// LATEST_POSTS</h2>
+      <a href="/blog/rss.xml" style="font-size:.75rem;color:rgba(255,255,255,.4);font-family:ui-monospace,monospace;text-decoration:none;border:1px solid rgba(255,255,255,.1);padding:.3rem .6rem;border-radius:.25rem" title="RSS Feed">RSS</a>
+    </div>
+    ${filterHtml}
+    <div style="display:grid;gap:1rem">${cards}</div>
+  </div></section>`;
+})(); %>
+<%- include('layout', { body: blocksHtml + articleListHtml, title, description, siteName, nav, footer, palette, currentPath }) %>

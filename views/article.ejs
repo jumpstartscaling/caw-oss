@@ -1,0 +1,69 @@
+<% const articleHtml = (() => {
+  const a = article;
+  const date = a.published_at ? new Date(a.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+  const tagHtml = (a.tags || []).map(t => `<a href="/blog?category=${a.category}" style="font-size:.7rem;padding:.2rem .6rem;border:1px solid rgba(0,255,148,.3);border-radius:.25rem;color:#00FF94;font-family:ui-monospace,monospace;text-decoration:none">${t}</a>`).join(' ');
+  const rt = typeof readingTime !== 'undefined' ? readingTime : '';
+
+  // Generate TOC from h2 tags
+  const headings = [];
+  const contentWithIds = (a.content || '').replace(/<h2>(.*?)<\/h2>/g, (match, text) => {
+    const id = text.replace(/<[^>]*>/g, '').replace(/[^a-zA-Z0-9 ]/g, '').trim().toLowerCase().replace(/\s+/g, '-');
+    headings.push({ id, text: text.replace(/<[^>]*>/g, '') });
+    return `<h2 id="${id}">${text}</h2>`;
+  });
+
+  let tocHtml = '';
+  if (headings.length > 2) {
+    const tocItems = headings.map(h => `<a href="#${h.id}" style="display:block;padding:.35rem 0;font-size:.8rem;color:rgba(255,255,255,.5);font-family:ui-monospace,monospace;text-decoration:none;border-left:2px solid rgba(255,255,255,.08);padding-left:.75rem;transition:color .2s,border-color .2s" onmouseover="this.style.color='#00FF94';this.style.borderColor='#00FF94'" onmouseout="this.style.color='rgba(255,255,255,.5)';this.style.borderColor='rgba(255,255,255,.08)'">${h.text}</a>`).join('');
+    tocHtml = `<nav style="margin-bottom:2rem;padding:1.25rem;border:1px solid rgba(255,255,255,.08);border-radius:.5rem;background:rgba(255,255,255,.02)">
+      <p style="font-family:ui-monospace,monospace;font-size:.7rem;text-transform:uppercase;color:#00FF94;margin-bottom:.75rem;letter-spacing:.1em">// Table of Contents</p>
+      ${tocItems}
+    </nav>`;
+  }
+
+  // Related articles
+  const rel = typeof related !== 'undefined' ? related : [];
+  let relatedHtml = '';
+  if (rel.length > 0) {
+    const relCards = rel.map(r => {
+      const rDate = r.published_at ? new Date(r.published_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) : '';
+      return `<a href="/blog/${r.slug}" style="display:block;padding:1.25rem;border:1px solid rgba(255,255,255,.08);border-radius:.5rem;transition:border-color .2s,background .2s" onmouseover="this.style.borderColor='rgba(0,255,148,.3)';this.style.background='rgba(0,255,148,.02)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='transparent'">
+        <span style="font-size:.7rem;color:rgba(255,255,255,.4);font-family:ui-monospace,monospace">${rDate}</span>
+        <h4 style="font-size:.95rem;font-weight:700;color:#fff;margin:.25rem 0">${r.title}</h4>
+        ${r.excerpt ? `<p style="font-size:.8rem;color:rgba(255,255,255,.45);margin:0">${r.excerpt}</p>` : ''}
+      </a>`;
+    }).join('');
+    relatedHtml = `<div style="margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.08)">
+      <h3 style="font-family:ui-monospace,monospace;font-size:.85rem;color:#00FF94;margin-bottom:1rem;text-transform:uppercase">// Related Posts</h3>
+      <div style="display:grid;gap:.75rem">${relCards}</div>
+    </div>`;
+  }
+
+  // Next/Prev navigation
+  const nav2 = typeof articleNav !== 'undefined' ? articleNav : { prev: null, next: null };
+  let navHtml = '';
+  if (nav2.prev || nav2.next) {
+    const prevLink = nav2.prev ? `<a href="/blog/${nav2.prev.slug}" style="flex:1;display:block;padding:1rem;border:1px solid rgba(255,255,255,.08);border-radius:.5rem;text-decoration:none;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(0,255,148,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'"><span style="font-size:.7rem;color:rgba(255,255,255,.4);font-family:ui-monospace,monospace">&larr; Previous</span><span style="display:block;font-size:.85rem;color:#fff;margin-top:.2rem">${nav2.prev.title}</span></a>` : '<div style="flex:1"></div>';
+    const nextLink = nav2.next ? `<a href="/blog/${nav2.next.slug}" style="flex:1;display:block;padding:1rem;border:1px solid rgba(255,255,255,.08);border-radius:.5rem;text-decoration:none;text-align:right;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(0,255,148,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'"><span style="font-size:.7rem;color:rgba(255,255,255,.4);font-family:ui-monospace,monospace">Next &rarr;</span><span style="display:block;font-size:.85rem;color:#fff;margin-top:.2rem">${nav2.next.title}</span></a>` : '<div style="flex:1"></div>';
+    navHtml = `<div style="display:flex;gap:1rem;margin-top:2rem">${prevLink}${nextLink}</div>`;
+  }
+
+  return `<section style="background:#050505;padding:6rem 0 4rem">
+    <div style="max-width:800px;margin:0 auto;padding:0 1.5rem">
+      <a href="/blog" style="display:inline-block;margin-bottom:2rem;font-size:.8rem;color:#00FF94;font-family:ui-monospace,monospace;text-decoration:none">&larr; Back to Blog</a>
+      <div style="margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+        <span style="font-size:.8rem;color:rgba(255,255,255,.5);font-family:ui-monospace,monospace">${date}</span>
+        <a href="/blog?category=${a.category}" style="font-size:.75rem;text-transform:uppercase;color:#00B8FF;font-family:ui-monospace,monospace;text-decoration:none">${a.category || ''}</a>
+        ${rt ? `<span style="font-size:.75rem;color:rgba(255,255,255,.35);font-family:ui-monospace,monospace">${rt} min read</span>` : ''}
+      </div>
+      <h1 style="font-size:2.5rem;font-weight:900;color:#fff;line-height:1.2;margin-bottom:1rem;letter-spacing:-1px">${a.title}</h1>
+      ${a.excerpt ? `<p style="font-size:1.1rem;color:rgba(255,255,255,.6);margin-bottom:1.5rem;font-family:ui-monospace,monospace">${a.excerpt}</p>` : ''}
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem">${tagHtml}</div>
+      ${tocHtml}
+      <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:2rem" class="prose prose-invert">${contentWithIds}</div>
+      ${relatedHtml}
+      ${navHtml}
+    </div>
+  </section>`;
+})(); %>
+<%- include('layout', { body: articleHtml, title, description, siteName, nav, footer, palette, currentPath }) %>

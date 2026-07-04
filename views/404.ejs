@@ -1,0 +1,42 @@
+<% const notFoundHtml = (() => {
+  const path = typeof currentPath !== 'undefined' ? currentPath : '/';
+  const suggs = typeof suggestions !== 'undefined' ? suggestions : [];
+
+  let html = `<section style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:2rem;color:#fff">
+    <span style="font-family:ui-monospace,monospace;font-size:.85rem;color:#FF00FF;margin-bottom:1rem;text-transform:uppercase;letter-spacing:.1em">// ERROR_404</span>
+    <h1 style="font-size:5rem;font-weight:900;margin-bottom:.5rem;background:linear-gradient(135deg,#FF00FF,#00B8FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent">404</h1>
+    <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:.5rem">Page Not Found</h2>
+    <p style="color:rgba(255,255,255,.5);margin-bottom:1.5rem;font-family:ui-monospace,monospace;font-size:.85rem">${path.replace(/</g,'&lt;')}</p>
+
+    <form action="/search" method="GET" style="display:flex;gap:.5rem;max-width:450px;width:100%;margin-bottom:2rem">
+      <input type="text" name="q" placeholder="Search for what you need..."
+        style="flex:1;background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;padding:.7rem 1rem;font-size:.9rem;border-radius:.5rem;font-family:ui-monospace,monospace;outline:none"
+        onfocus="this.style.borderColor='#00FF94'" onblur="this.style.borderColor='rgba(255,255,255,.15)'" />
+      <button type="submit" style="padding:.7rem 1.25rem;background:#00FF94;color:#050505;font-weight:700;font-size:.85rem;text-transform:uppercase;border:none;border-radius:.5rem;cursor:pointer">Search</button>
+    </form>
+
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.5rem">
+      <a href="/" style="padding:.5rem 1rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:.375rem;color:#fff;font-size:.85rem;text-decoration:none">Homepage</a>
+      <a href="/blog" style="padding:.5rem 1rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:.375rem;color:#fff;font-size:.85rem;text-decoration:none">Blog</a>
+      <a href="/services" style="padding:.5rem 1rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:.375rem;color:#fff;font-size:.85rem;text-decoration:none">Services</a>
+      <a href="/contact" style="padding:.5rem 1rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:.375rem;color:#fff;font-size:.85rem;text-decoration:none">Contact</a>
+    </div>
+  </section>`;
+
+  if (suggs.length > 0) {
+    const cards = suggs.map(a => {
+      const date = a.published_at ? new Date(a.published_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) : '';
+      return `<a href="/blog/${a.slug}" style="display:block;padding:1rem;border:1px solid rgba(255,255,255,.08);border-radius:.5rem;text-decoration:none;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(0,255,148,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+        <span style="font-size:.7rem;color:rgba(255,255,255,.4);font-family:ui-monospace,monospace">${date}</span>
+        <h4 style="font-size:.9rem;font-weight:700;color:#fff;margin:.2rem 0">${a.title}</h4>
+      </a>`;
+    }).join('');
+    html += `<section style="background:#050505;padding:2rem 0 4rem;width:100%"><div style="max-width:600px;margin:0 auto;padding:0 1.5rem">
+      <h3 style="font-family:ui-monospace,monospace;font-size:.8rem;color:#00FF94;text-transform:uppercase;margin-bottom:1rem;text-align:center">// Maybe you were looking for</h3>
+      <div style="display:grid;gap:.5rem">${cards}</div>
+    </div></section>`;
+  }
+
+  return html;
+})(); %>
+<%- include('layout', { body: notFoundHtml, title: 'Page Not Found', description: 'The page you requested could not be found.', siteName: siteName || 'CAW', nav: typeof nav !== 'undefined' ? nav : {}, footer: typeof footer !== 'undefined' ? footer : {}, palette: 'emerald', currentPath: currentPath || '/' }) %>
