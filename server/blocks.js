@@ -148,9 +148,18 @@ function renderBlock(block) {
     document.getElementById('${formId}')?.addEventListener('submit',async(e)=>{
       e.preventDefault();
       const f=e.target,b=f.querySelector('button'),o=b.innerText;
+      const payload=Object.fromEntries(new FormData(f));
+      const params=new URLSearchParams(window.location.search);
+      ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid','msclkid'].forEach((key)=>{
+        if(params.has(key)) payload[key]=params.get(key);
+      });
+      payload.landing_page=window.location.pathname;
+      payload.page_url=window.location.href;
+      payload.referrer=document.referrer || '';
+      payload.user_agent=navigator.userAgent || '';
       b.innerText='ENCRYPTING...';b.disabled=true;
       try{
-        const r=await fetch('/api/submit-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(f)))});
+        const r=await fetch('/api/submit-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
         if(r.ok){b.innerText='TRANSMISSION_SUCCESSFUL';b.style.borderColor='#00FF94';setTimeout(()=>{f.reset();b.innerText=o;b.disabled=false;},3000);}else throw 0;
       }catch{b.innerText='ERR_CONNECTION_REFUSED';b.style.borderColor='#FF00FF';setTimeout(()=>{b.innerText=o;b.disabled=false;},3000);}
     });
