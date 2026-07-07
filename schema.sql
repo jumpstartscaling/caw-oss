@@ -39,3 +39,25 @@ CREATE INDEX IF NOT EXISTS idx_caw_articles_status ON caw_articles (status);
 CREATE INDEX IF NOT EXISTS idx_caw_articles_category ON caw_articles (category);
 CREATE INDEX IF NOT EXISTS idx_caw_articles_published ON caw_articles (published_at DESC)
   WHERE status = 'published';
+
+-- Table 4: Lead capture submissions
+CREATE TABLE IF NOT EXISTS leads (
+  id BIGSERIAL PRIMARY KEY,
+  source TEXT NOT NULL DEFAULT 'CAW_SITE',
+  name TEXT NOT NULL DEFAULT '',
+  email TEXT NOT NULL DEFAULT '',
+  phone TEXT,
+  website TEXT,
+  revenue TEXT,
+  budget TEXT,
+  problem TEXT,
+  form_type TEXT NOT NULL DEFAULT 'unknown',
+  status TEXT NOT NULL DEFAULT 'new',
+  data_json JSONB NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_leads_created_at ON leads (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_leads_status ON leads (status);
+CREATE INDEX IF NOT EXISTS idx_leads_source ON leads (source);
+CREATE INDEX IF NOT EXISTS idx_leads_email ON leads (email);
