@@ -1,0 +1,47 @@
+{
+  "template": "business-lead-gen",
+  "purpose": "Standalone website for a business that needs service pages, local SEO, and lead capture.",
+  "lead_flow": [
+    "visitor lands on page",
+    "page renders from caw_content",
+    "visitor submits form",
+    "form posts to /api/submit-lead",
+    "lead is stored in leads table",
+    "business follows up"
+  ],
+  "required_pages": [
+    { "slug": "", "name": "Home", "goal": "Explain offer and drive the primary lead form" },
+    { "slug": "about", "name": "About", "goal": "Build trust with story, proof, credentials, and guarantees" },
+    { "slug": "services", "name": "Services", "goal": "List all services and link to individual service pages" },
+    { "slug": "services/{service}", "name": "Service Page", "goal": "Convert high-intent service visitors" },
+    { "slug": "service-areas", "name": "Service Areas", "goal": "List all covered cities or regions" },
+    { "slug": "service-areas/{area}", "name": "Local Area Page", "goal": "Convert local search visitors" },
+    { "slug": "blog", "name": "Resource Center", "goal": "Publish helpful content and support SEO" },
+    { "slug": "contact", "name": "Contact", "goal": "Capture quote, estimate, consultation, or booking requests" },
+    { "slug": "thank-you", "name": "Thank You", "goal": "Confirm the request and guide the next step" },
+    { "slug": "privacy", "name": "Privacy Policy", "goal": "Explain data and contact form policies" },
+    { "slug": "terms", "name": "Terms", "goal": "Publish business terms and service disclaimers" }
+  ],
+  "recommended_blocks": [
+    "hero",
+    "terminal_problem",
+    "solution_cards",
+    "icon_bullets",
+    "authority",
+    "audit_form",
+    "cta",
+    "value_prop"
+  ],
+  "environment_variables": [
+    "BUSINESS_NAME",
+    "BUSINESS_TYPE",
+    "PRIMARY_SERVICE",
+    "PRIMARY_CITY",
+    "PRIMARY_REGION",
+    "BUSINESS_PHONE",
+    "BUSINESS_EMAIL",
+    "LEAD_OFFER",
+    "BUSINESS_SERVICES",
+    "BUSINESS_SERVICE_AREAS"
+  ]
+}

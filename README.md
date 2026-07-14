@@ -3,43 +3,75 @@ Database-driven SSR framework built on **Fastify + EJS + PostgreSQL**.
 
 CAW renders pages, blogs, and lead forms from a live Postgres database at request time — no build step, no static generation, zero rebuild latency.
 
+## Business Lead-Gen Template
+
+CAW can be used as a standalone website template for a business that needs lead generation, service pages, service area pages, contact forms, and PostgreSQL-backed lead storage.
+
+The business use case is simple:
+
+1. A visitor lands on a service page, local page, blog page, or landing page.
+2. CAW renders the page server-side from `caw_content`.
+3. The visitor submits a quote, estimate, consultation, or contact request.
+4. The form posts to `/api/submit-lead`.
+5. The submission is stored in the `leads` table.
+6. The business follows up by phone, email, CRM, or automation.
+
+See the implementation guide: [Lead Generation Template](docs/LEAD_GEN_TEMPLATE.md).
+
 ## Architecture
 - **Pages, Blocks, Nav, Footer** → Direct PostgreSQL (`caw_content`)
 - **Forms** → POST `/api/submit-lead` → INSERT `leads`
 - **Frontend** → EJS Templates + Tailwind CSS (via inline utilities in blocks)
 
-## Use Case: Standalone Business Website
+## Template Pages
 
-CAW can be used as a simple standalone website engine for a local service business, consultant, agency, contractor, or small company that needs a fast marketing site without a heavy CMS or static build pipeline.
+A lead-gen business site should start with:
 
-A business can run CAW as its main website with database-managed pages such as Home, About, Services, Service Area pages, Blog, Contact, and landing pages. Content blocks, navigation, footer content, blog posts, and lead forms are stored in PostgreSQL, so the site can be updated from the database without rebuilding or redeploying the frontend.
+- Home
+- About
+- Services
+- Individual service pages
+- Service areas
+- Individual local pages
+- Blog/resource center
+- Contact
+- Thank-you page
+- Privacy policy
+- Terms of service
 
-Example standalone business website flow:
+## Build Instructions
 
-- A visitor lands on a service page or local landing page.
-- CAW renders the page server-side from `caw_content`.
-- The visitor submits a quote request, consultation request, or contact form.
-- The form posts to `/api/submit-lead` and stores the lead in the `leads` table.
-- The business can follow up with the lead while continuing to add or edit website content directly in the database.
+```bash
+cp .env.example .env
+docker compose up -d postgres
+npm install
+npm run db:seed
+npm run dev
+```
 
-This makes CAW useful for small business websites that need SEO-friendly pages, editable content, lead capture, and fast deployment without requiring WordPress, a visual page builder, or a full enterprise CMS.
+Open `http://localhost:4321`.
 
-## Quick Start (Local Docker)
+## Production Release Path
 
-1. Clone the repository.
-2. Copy `.env.example` to `.env`:
-   ```bash
-   cp .env.example .env
-   ```
-3. Start the application stack (App + PostgreSQL):
-   ```bash
-   docker compose up -d
-   ```
-4. Access the application at `http://localhost:4321`.
+```bash
+cp .env.example .env
+docker compose up -d --build
+curl http://localhost:4321/health
+```
+
+Before release, confirm:
+
+- `DATABASE_URL` points to production PostgreSQL
+- `SITE_URL` is the final HTTPS domain
+- `/health` returns ok
+- `/contact` loads
+- a test lead writes to the `leads` table
+- privacy and terms pages are real, not placeholders
+- phone, email, services, and service areas are correct
 
 ## Local Development (Bare Metal)
 
-If you prefer to run the Node.js application directly on your host (with PostgreSQL in Docker):
+If you prefer to run the Node.js application directly on your host with PostgreSQL in Docker:
 
 ```bash
 # Start just the database
@@ -57,6 +89,7 @@ npm run dev
 
 ## Documentation
 
+- [Lead Generation Template](docs/LEAD_GEN_TEMPLATE.md)
 - [AI Handoff & Architecture](docs/AI_HANDOFF.md)
 - [Block Reference](docs/BLOCK_REFERENCE.md)
 - [Schema Reference](docs/SCHEMA_REFERENCE.md)
